@@ -3,12 +3,15 @@ package ru.samsu.mj.board;
 import ru.samsu.mj.collection.BoardCollection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BoardGenerator {
     public static BoardCollection generateByDimension(int n) {
         List<Board> list = new ArrayList<>();
-        generateByDimension(list, new int[n], new boolean[n], n, 0);
+        int[] board = new int[n];
+        Arrays.fill(board, -1);
+        generateByDimension(list, board, new boolean[n], n, 0);
         BoardCollection boardCollection = BoardCollection.valueOf(list);
         return boardCollection;
     }
@@ -24,14 +27,19 @@ public class BoardGenerator {
 
         int max = n / 2 - Math.abs(n / 2 - i);
         for (int j = 0; j < max; j++) {
-            if (occCols[j])
+            int d = n - 1 - i - j;
+            int i2 = i + d, j2 = j + d;
+
+            if (occCols[j] || occCols[j2])
                 continue;
 
-            occCols[j] = true;
+            occCols[j] = occCols[j2] = true;
             current[i] = j;
+            current[i2] = j2;
             generateByDimension(list, current, occCols, n, 1 + i);
-            occCols[j] = false;
+            occCols[j] = occCols[j2] = false;
             current[i] = -1;
+            current[i2] = -1;
         }
     }
 }
