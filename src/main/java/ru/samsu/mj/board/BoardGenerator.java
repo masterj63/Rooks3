@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BoardGenerator {
+class BoardGenerator {
     public static BoardCollection generateByDimension(int n) {
         List<Board> list = new ArrayList<>();
         int[] board = new int[n];
