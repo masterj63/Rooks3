@@ -22,4 +22,12 @@ class BoardMatrix {
     boolean get(int i, int j) {
         return MATRIX[i][j];
     }
+
+    int length() {
+        return MATRIX.length;
+    }
+
+    int length(int i) {
+        return MATRIX[i].length;
+    }
 }
