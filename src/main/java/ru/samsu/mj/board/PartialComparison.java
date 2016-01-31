@@ -1,5 +1,5 @@
 package ru.samsu.mj.board;
 
-public enum PartialComparation {
+public enum PartialComparison {
     LESS, EQUALS, GREATER, INCOMPARABLE
 }
