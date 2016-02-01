@@ -5,7 +5,7 @@ import ru.samsu.mj.board.PartialComparison;
 
 import java.util.*;
 
-public class SortedBoardCollection {
+public class SortedBoardCollection extends AbstractCollection {
     private final Map<Board, BoardCollection> MAP;
     private final Board THE_LEAST_BOARD;
 
@@ -75,5 +75,15 @@ public class SortedBoardCollection {
 
     public BoardCollection closestAbove(Board board) {
         return MAP.get(board);
+    }
+
+    @Override
+    public Iterator iterator() {
+        throw new UnsupportedOperationException("will be implemented eventually");
+    }
+
+    @Override
+    public int size() {
+        return MAP.size();
     }
 }
