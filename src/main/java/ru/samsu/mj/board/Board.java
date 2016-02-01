@@ -20,6 +20,13 @@ public class Board implements PartiallyComparable<Board> {
         return new Board(deflatedBoard.clone());
     }
 
+    public boolean isEmpty() {
+        for (int i : DEFLATED_BOARD)
+            if (i != -1)
+                return false;
+        return true;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null || !(obj instanceof Board))
@@ -30,6 +37,11 @@ public class Board implements PartiallyComparable<Board> {
         Board that = (Board) obj;
 
         return Arrays.equals(this.DEFLATED_BOARD, that.DEFLATED_BOARD);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(DEFLATED_BOARD);
     }
 
     @Override
