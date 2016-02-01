@@ -23,13 +23,13 @@ class RankMatrix implements PartiallyComparable<RankMatrix> {
                 rankMatrix[i][0]++;
         }
         // Go through bottom row.
-        for (int j = 1; j < rankMatrix.length; j++) {
+        for (int j = 1; j < rankMatrix[rankMatrix.length - 1].length; j++) {
             rankMatrix[rankMatrix.length - 1][j] = rankMatrix[rankMatrix.length - 1][j - 1];
             if (boardMatrix.get(rankMatrix.length - 1, j))
                 rankMatrix[rankMatrix.length - 1][j]++;
         }
         // Go through the whole.
-        for (int i = rankMatrix.length - 1, j = 1; i > j; i--, j++) {
+        for (int i = rankMatrix.length - 2, j = 1; i > j; i--, j++) {
             for (int off = 0; i - off > j + off; off++) {
                 int ii = i - off, jj = j + off;
                 int onLeft = rankMatrix[ii][jj - 1];
