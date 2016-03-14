@@ -30,8 +30,17 @@ class RankMatrix implements PartiallyComparable<RankMatrix> {
         }
         // Go through the whole.
         for (int i = rankMatrix.length - 2, j = 1; i > j; i--, j++) {
-            for (int off = 0; i - off > j + off; off++) {
-                int ii = i - off, jj = j + off;
+            //Go up.
+            for (int ii = i, jj = j; ii > j; ii--) {
+                int onLeft = rankMatrix[ii][jj - 1];
+                int onBottom = rankMatrix[1 + ii][jj];
+                int onLeftBottom = rankMatrix[1 + ii][jj - 1];
+                rankMatrix[ii][jj] = onLeft + onBottom - onLeftBottom;
+                if (boardMatrix.get(ii, jj))
+                    rankMatrix[ii][jj]++;
+            }
+            //Go right.
+            for (int jj = j, ii = i; jj < i; jj++) {
                 int onLeft = rankMatrix[ii][jj - 1];
                 int onBottom = rankMatrix[1 + ii][jj];
                 int onLeftBottom = rankMatrix[1 + ii][jj - 1];

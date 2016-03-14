@@ -3,10 +3,7 @@ package ru.samsu.mj.collection;
 
 import ru.samsu.mj.board.Board;
 
-import java.util.AbstractCollection;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.*;
 
 public class BoardCollection extends AbstractCollection<Board> {
     private final Collection<Board> COLLECTION;
@@ -19,6 +16,11 @@ public class BoardCollection extends AbstractCollection<Board> {
         Collection<Board> unmodifiableBoards = Collections.unmodifiableCollection(boards);
         BoardCollection boardCollection = new BoardCollection(unmodifiableBoards);
         return boardCollection;
+    }
+
+    public BoardCollection valueOfCollection(Collection<Board> collection) {
+        ArrayList<Board> boards = new ArrayList<>(collection.size());
+        return new BoardCollection(boards);
     }
 
     @Override

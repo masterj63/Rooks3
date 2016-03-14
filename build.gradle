@@ -1,7 +1,20 @@
 group 'ru.samsu.mj'
 version '1.0-SNAPSHOT'
 
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
+    }
+}
+
 apply plugin: 'java'
+apply plugin: "com.github.johnrengelman.shadow"
 
 sourceCompatibility = 1.8
 
@@ -11,5 +24,17 @@ repositories {
 
 dependencies {
     testCompile 'junit:junit:4.12'
+    
     compile 'org.apache.logging.log4j:log4j-core:2.5'
+
+    compile "net.sf.jung:jung-visualization:2.0.1"
+    compile "net.sf.jung:jung-api:2.0.1"
+    compile "net.sf.jung:jung-graph-impl:2.0.1"
+
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'ru.samsu.mj.Main'
+    }
 }

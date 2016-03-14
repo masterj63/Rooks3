@@ -6,6 +6,8 @@ import ru.samsu.mj.board.PartialComparison;
 import java.util.*;
 
 public class SortedBoardCollection extends AbstractCollection {
+    private final static BoardCollection EMPTY_BOARD_COLLECTION = BoardCollection.valueOf(Collections.EMPTY_LIST);
+
     private final Map<Board, BoardCollection> MAP;
     private final Board THE_LEAST_BOARD;
 
@@ -74,7 +76,7 @@ public class SortedBoardCollection extends AbstractCollection {
     }
 
     public BoardCollection closestAbove(Board board) {
-        return MAP.get(board);
+        return MAP.getOrDefault(board, EMPTY_BOARD_COLLECTION);
     }
 
     @Override

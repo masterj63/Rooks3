@@ -12,7 +12,7 @@ class BoardMatrix {
 
         for (int i = 0; i < matrix.length; i++) {
             matrix[i] = new boolean[i];
-            if (deflatedBoard[i] > 0)
+            if (deflatedBoard[i] >= 0)
                 matrix[i][deflatedBoard[i]] = true;
         }
 
