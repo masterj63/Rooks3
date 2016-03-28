@@ -20,6 +20,24 @@ public class Board implements PartiallyComparable<Board> {
         this.RANK_MATRIX = RankMatrix.valueOfBoardMatrix(BOARD_MATRIX);
     }
 
+    public boolean isInvolution() {
+        int[] invDeflatedBoard = new int[DEFLATED_BOARD.length];
+        Arrays.fill(invDeflatedBoard, -1);
+        for (int i = 0; i < DEFLATED_BOARD.length; i++)
+            if (DEFLATED_BOARD[i] != -1)
+                invDeflatedBoard[DEFLATED_BOARD[i]] = i;
+        for (int i = 0; i < DEFLATED_BOARD.length; i++) {
+            int j = DEFLATED_BOARD[i];
+            if (j == -1)
+                continue;
+            if (invDeflatedBoard[i] != -1)
+                return false;
+            if (DEFLATED_BOARD[j] != -1)
+                return false;
+        }
+        return true;
+    }
+
     public static Board valueOf(int[] deflatedBoard) {
         return new Board(deflatedBoard.clone());
     }

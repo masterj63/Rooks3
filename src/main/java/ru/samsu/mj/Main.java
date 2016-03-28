@@ -16,10 +16,8 @@ import ru.samsu.mj.collection.SortedBoardCollection;
 
 import javax.swing.*;
 import java.awt.geom.Point2D;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -112,25 +110,49 @@ public class Main {
         log.info("Finished drawing graph.");
 
         //NEW here
-        ArrayList<Board> kerovBoards = new ArrayList<>(boards.size());
-        HashMap<Board, Board> toKerovMap = new HashMap<>();
+//        ArrayList<Board> kerovBoards = new ArrayList<>(boards.size());
+//        HashMap<Board, Board> toKerovMap = new HashMap<>();
+//        HashMap<Board, Board> toKerovMapInv = new HashMap<>();
+//        for (Board board : boards) {
+//            Board kerovC = board.kerov();
+//            kerovBoards.add(kerovC);
+//
+//            toKerovMap.put(board, kerovC);
+//            toKerovMapInv.put(kerovC, board);
+//        }
+//        BoardCollection kerovCollection = BoardCollection.valueOf(kerovBoards);
+//        SortedBoardCollection sortedKerov = kerovCollection.sort();
+//
+//        boolean ch = check(
+//                toKerovMap, toKerovMapInv,
+//                sortedBoards, sortedKerov
+//        );
+//        log.info(String.format("hypothesis is %b", ch));
+
+        //VERY NEW HERE
+        BoardCollection t0 = BoardGenerator.generateByDimension(2 * n - 2);
+        List<Board> t1 = new LinkedList<>(t0).stream()
+                .filter(Board::isInvolution)
+                .collect(Collectors.toList());
+        BoardCollection t2 = BoardCollection.valueOf(t1);
+        SortedBoardCollection t3 = t2.sort();
+
+
         HashMap<Board, Board> toKerovMapInv = new HashMap<>();
+        HashMap<Board, Board> toKerovMap = new HashMap<>();
         for (Board board : boards) {
             Board kerovC = board.kerov();
-            kerovBoards.add(kerovC);
 
             toKerovMap.put(board, kerovC);
             toKerovMapInv.put(kerovC, board);
         }
-        BoardCollection kerovCollection = BoardCollection.valueOf(kerovBoards);
-        SortedBoardCollection sortedKerov = kerovCollection.sort();
-
         boolean ch = check(
                 toKerovMap, toKerovMapInv,
-                sortedBoards, sortedKerov
+                sortedBoards, t3
         );
         log.info(String.format("hypothesis is %b", ch));
     }
+
 
     private static boolean check(HashMap<Board, Board> toKerovMap, HashMap<Board, Board> toKerovMapInv,
                                  SortedBoardCollection sortedBoards, SortedBoardCollection sortedKerov) {
