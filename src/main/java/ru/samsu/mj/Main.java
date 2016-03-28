@@ -125,12 +125,11 @@ public class Main {
         BoardCollection kerovCollection = BoardCollection.valueOf(kerovBoards);
         SortedBoardCollection sortedKerov = kerovCollection.sort();
 
-        log.info(String.format("%b",
-                check(
-                        toKerovMap, toKerovMapInv,
-                        sortedBoards, sortedKerov
-                )
-        ));
+        boolean ch = check(
+                toKerovMap, toKerovMapInv,
+                sortedBoards, sortedKerov
+        );
+        log.info(String.format("hypothesis is %b", ch));
     }
 
     private static boolean check(HashMap<Board, Board> toKerovMap, HashMap<Board, Board> toKerovMapInv,
