@@ -158,6 +158,7 @@ public class Main {
         );
         log.info("finished checking");
         log.info(String.format("hypothesis is %b", ch));
+//        sortedBoards.forEach(b -> log.info(String.format("%s has %d above", b, sortedBoards.closestAbove(b).size())));
     }
 
 
@@ -186,10 +187,19 @@ public class Main {
             log.info("contains.");
             if (!contains) {
                 log.info("here :(");
-                log.info("one is " + board.html());
+                log.info("");
+                log.info("one is " + currentBoard);
                 log.info("it has " + boardsAbove.size() + " aboves");
-                log.info("above involutions are:");
+                log.info("they are:");
+                boardsAbove.forEach(log::info);
+                log.info("");
+                log.info("one's kerov is " + currentKerov);
+                log.info("it has " + kerovsAbove.size() + " aboves");
+                log.info("they are:");
                 kerovsAbove.forEach(log::info);
+                log.info("");
+                log.info("bad above is " + board);
+                log.info("it's kerov is " + kerov);
                 return false;
             }
             if (!dfsCheck(board, toKerovMap, toKerovMapInv, sortedBoards, sortedKerov, hypCache)) {

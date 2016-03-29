@@ -4,8 +4,9 @@ import ru.samsu.mj.board.Board;
 import ru.samsu.mj.board.PartialComparison;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class SortedBoardCollection extends AbstractCollection {
+public class SortedBoardCollection extends AbstractCollection<Board> {
     private final static BoardCollection EMPTY_BOARD_COLLECTION = BoardCollection.valueOf(Collections.EMPTY_LIST);
 
     private final Map<Board, BoardCollection> MAP;
@@ -42,10 +43,9 @@ public class SortedBoardCollection extends AbstractCollection {
 
     private static void injectMapping(Map<Board, BoardCollection> map, Set<Board> lastLayer, Set<Board> nextLayer) {
         for (Board oneBoard : lastLayer) {
-            Set<Board> imageSet = new HashSet<>();// and `oneBoard` is its key
-            for (Board anotherBoard : nextLayer)
-                if (oneBoard.partiallyCompare(anotherBoard) == PartialComparison.LESS)
-                    imageSet.add(anotherBoard);
+            Set<Board> imageSet = nextLayer.stream()
+                    .filter(anotherBoard -> oneBoard.partiallyCompare(anotherBoard) == PartialComparison.LESS)
+                    .collect(Collectors.toSet());// and `oneBoard` is its key
             map.put(oneBoard, BoardCollection.valueOf(imageSet));
         }
     }
@@ -80,8 +80,20 @@ public class SortedBoardCollection extends AbstractCollection {
     }
 
     @Override
-    public Iterator iterator() {
-        throw new UnsupportedOperationException("will be implemented eventually");
+    public Iterator<Board> iterator() {
+        return new Iterator<Board>() {
+            Iterator<Board> iterator = MAP.keySet().iterator();
+
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public Board next() {
+                return iterator.next();
+            }
+        };
     }
 
     @Override
