@@ -16,8 +16,9 @@ import ru.samsu.mj.collection.SortedBoardCollection;
 
 import javax.swing.*;
 import java.awt.geom.Point2D;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.String.format;
 
@@ -130,14 +131,16 @@ public class Main {
 //        log.info(String.format("hypothesis is %b", ch));
 
         //VERY NEW HERE
-        BoardCollection t0 = BoardGenerator.generateByDimension(2 * n - 2);
-        List<Board> t1 = new LinkedList<>(t0).stream()
-                .filter(Board::isInvolution)
-                .collect(Collectors.toList());
-        BoardCollection t2 = BoardCollection.valueOf(t1);
-        SortedBoardCollection t3 = t2.sort();
+        log.info("started generating involutions");
+        BoardCollection t0 = BoardGenerator.generateInvsByDimension(2 * n - 2);
+        log.info("finished generating involutions");
+
+        log.info("started sorting involutions");
+        SortedBoardCollection t1 = t0.sort();
+        log.info("finished sorting involutions");
 
 
+        log.info("started trash");
         HashMap<Board, Board> toKerovMapInv = new HashMap<>();
         HashMap<Board, Board> toKerovMap = new HashMap<>();
         for (Board board : boards) {
@@ -146,10 +149,14 @@ public class Main {
             toKerovMap.put(board, kerovC);
             toKerovMapInv.put(kerovC, board);
         }
+        log.info("finished trash");
+
+        log.info("started checking");
         boolean ch = check(
                 toKerovMap, toKerovMapInv,
-                sortedBoards, t3
+                sortedBoards, t1
         );
+        log.info("finished checking");
         log.info(String.format("hypothesis is %b", ch));
     }
 
@@ -179,6 +186,10 @@ public class Main {
             log.info("contains.");
             if (!contains) {
                 log.info("here :(");
+                log.info("one is " + board.html());
+                log.info("it has " + boardsAbove.size() + " aboves");
+                log.info("above involutions are:");
+                kerovsAbove.forEach(log::info);
                 return false;
             }
             if (!dfsCheck(board, toKerovMap, toKerovMapInv, sortedBoards, sortedKerov, hypCache)) {
