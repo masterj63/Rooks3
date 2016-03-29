@@ -37,7 +37,7 @@ public class BoardGenerator {
             occCols[j] = occCols[j2] = true;
             current[i] = j;
             current[i2] = j2;
-            generateByDimension(list, current, occCols, n, 1 + i);
+            generateInvsByDimension(list, current, occCols, n, 1 + i);
             occCols[j] = occCols[j2] = false;
             current[i] = -1;
             current[i2] = -1;
