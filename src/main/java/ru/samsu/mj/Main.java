@@ -57,83 +57,10 @@ public class Main {
         SortedBoardCollection sortedBoards = boards.sort();
         log.info("Finished sorting boards.");
 
-        log.info("Started initializing UI.");
-        Graph<String, String> graph = new UndirectedSparseGraph<>();
-        StaticLayout<String, String> layout = new StaticLayout<>(graph);
-        VisualizationViewer<String, String> viewer = new VisualizationViewer<>(layout);
-        GraphZoomScrollPane zoomPane = new GraphZoomScrollPane(viewer);
-
-        viewer.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.SE);
-        viewer.setGraphMouse(new DefaultModalGraphMouse<>());
-        viewer.getRenderContext().setVertexLabelTransformer(x -> x);
-
-        JFrame jf = new JFrame();
-        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jf.add(zoomPane);
-        jf.pack();
-        jf.setVisible(true);
-        log.info("Finished initializing UI.");
-
-        ArrayDeque<Board> queue = new ArrayDeque<>();
-        queue.add(sortedBoards.theLeast());
-
-        HashMap<Board, Integer> layer = new HashMap<>();
-        layer.put(sortedBoards.theLeast(), 0);
-
-        HashMap<Integer, Integer> verticalCount = new HashMap<>();
-        verticalCount.put(0, 0);
-
-        log.info("Started drawing graph.");
-        final int A = 800;
-        graph.addVertex(sortedBoards.theLeast().html());
-        layout.setLocation(sortedBoards.theLeast().html(), new Point2D.Double(0, 0));
-        while (!queue.isEmpty()) {
-            Board thisBoard = queue.pollFirst();
-            String thisHtml = thisBoard.html();
-            int nextLayer = 1 + layer.get(thisBoard);
-
-            for (Board nextBoard : sortedBoards.closestAbove(thisBoard)) {
-                String nextHtml = nextBoard.html();
-                if (!layer.containsKey(nextBoard)) {
-                    queue.addLast(nextBoard);
-                    layer.put(nextBoard, nextLayer);
-
-                    verticalCount.putIfAbsent(nextLayer, -1);
-                    verticalCount.put(nextLayer, 1 + verticalCount.get(nextLayer));//TODO compute?
-                    Point2D.Double nextPoint = new Point2D.Double(A * nextLayer, A * verticalCount.get(nextLayer));
-                    graph.addVertex(nextHtml);
-                    layout.setLocation(nextHtml, nextPoint);
-                }
-
-                graph.addEdge(thisHtml + nextHtml, thisHtml, nextHtml);
-            }
-        }
-        log.info("Finished drawing graph.");
-
-        //NEW here
-//        ArrayList<Board> kerovBoards = new ArrayList<>(boards.size());
-//        HashMap<Board, Board> toKerovMap = new HashMap<>();
-//        HashMap<Board, Board> toKerovMapInv = new HashMap<>();
-//        for (Board board : boards) {
-//            Board kerovC = board.kerov();
-//            kerovBoards.add(kerovC);
-//
-//            toKerovMap.put(board, kerovC);
-//            toKerovMapInv.put(kerovC, board);
-//        }
-//        BoardCollection kerovCollection = BoardCollection.valueOf(kerovBoards);
-//        SortedBoardCollection sortedKerov = kerovCollection.sort();
-//
-//        boolean ch = check(
-//                toKerovMap, toKerovMapInv,
-//                sortedBoards, sortedKerov
-//        );
-//        log.info(String.format("hypothesis is %b", ch));
-
         //VERY NEW HERE
-        log.info("started generating involutions");
+        log.info("started generating involutions.");
         BoardCollection t0 = BoardGenerator.generateInvsByDimension(2 * n - 2);
-        log.info("finished generating involutions");
+        log.info(format("finished generating (%d) involutions.", t0.size()));
 
         log.info("started sorting involutions");
         SortedBoardCollection t1 = t0.sort();
