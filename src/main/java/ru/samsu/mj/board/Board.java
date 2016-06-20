@@ -81,4 +81,9 @@ public class Board implements PartiallyComparable<Board> {
 
         return html;
     }
+
+    @Override
+    public String toString() {
+        return html();
+    }
 }

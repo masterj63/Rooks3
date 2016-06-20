@@ -5,15 +5,17 @@ import ru.samsu.mj.board.PartialComparison;
 
 import java.util.*;
 
-public class SortedBoardCollection extends AbstractCollection {
+public class SortedBoardCollection extends AbstractCollection<Board> {
     private final static BoardCollection EMPTY_BOARD_COLLECTION = BoardCollection.valueOf(Collections.EMPTY_LIST);
 
     private final Map<Board, BoardCollection> MAP;
     private final Board THE_LEAST_BOARD;
+    private final HashSet<Board> ORIGINAL_SET_COLLECTION;
 
-    private SortedBoardCollection(Map<Board, BoardCollection> map, Board theLeastBoard) {
+    private SortedBoardCollection(Map<Board, BoardCollection> map, Board theLeastBoard, HashSet<Board> originalCollection) {
         MAP = map;
         THE_LEAST_BOARD = theLeastBoard;
+        ORIGINAL_SET_COLLECTION = originalCollection;
     }
 
     static SortedBoardCollection valueOf(Collection<Board> boardCollection) {
@@ -37,7 +39,7 @@ public class SortedBoardCollection extends AbstractCollection {
             lastLayer = nextLayer;
         }
 
-        return new SortedBoardCollection(map, theLeastBoard);
+        return new SortedBoardCollection(map, theLeastBoard, new HashSet<>(boardCollection));
     }
 
     private static void injectMapping(Map<Board, BoardCollection> map, Set<Board> lastLayer, Set<Board> nextLayer) {
@@ -82,6 +84,11 @@ public class SortedBoardCollection extends AbstractCollection {
     @Override
     public Iterator iterator() {
         throw new UnsupportedOperationException("will be implemented eventually");
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        return ORIGINAL_SET_COLLECTION.contains(o);
     }
 
     @Override

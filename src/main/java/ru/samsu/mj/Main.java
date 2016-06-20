@@ -9,6 +9,7 @@ import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.FormattedMessageFactory;
 import ru.samsu.mj.board.Board;
 import ru.samsu.mj.board.BoardGenerator;
 import ru.samsu.mj.collection.BoardCollection;
@@ -17,15 +18,14 @@ import ru.samsu.mj.collection.SortedBoardCollection;
 import javax.swing.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.String.format;
 
 public class Main {
-    private static final Logger log = LogManager.getLogger(Main.class);
-    private static final int DEFAULT_DIMENSION = 6;
+    private static final Logger log = LogManager.getLogger(Main.class, new FormattedMessageFactory());
+    private static final int DEFAULT_DIMENSION = 4;
 
     private Main() {
         final int n;
@@ -59,6 +59,118 @@ public class Main {
         log.info("Finished sorting boards.");
 
         log.info("Started initializing UI.");
+        drawGraph(sortedBoards, String.format("Boards, %d-boards", n));
+        log.info("Finished initializing UI.");
+
+        //NEW here
+//        ArrayList<Board> kerovBoards = new ArrayList<>(boards.size());
+        HashMap<Board, Board> toKerovMap = new HashMap<>();
+        HashMap<Board, Board> toKerovMapInv = new HashMap<>();
+        for (Board board : boards) {
+            Board kerovC = board.kerov();
+//            kerovBoards.add(kerovC);
+
+            toKerovMap.put(board, kerovC);
+            toKerovMapInv.put(kerovC, board);
+        }
+//        BoardCollection kerovCollection = BoardCollection.valueOf(kerovBoards);
+//        SortedBoardCollection sortedKerov = kerovCollection.sort();
+
+        log.info("Started generating invols.");
+        BoardCollection invols = BoardGenerator.generateByDimensionInvols(2 * n - 2);
+        log.info("Generated ({}) invols.", invols.size());
+        log.info("Started sorting invols.", "");
+        SortedBoardCollection sortedInvols = invols.sort();
+        log.info("Sorted invols.", "");
+        log.info("Checking invols...");
+        boolean ch = check(
+                toKerovMap, toKerovMapInv,
+                sortedBoards, sortedInvols
+        );
+        log.info(String.format("hypothesis is %b", ch));
+
+        drawGraph(sortedInvols, String.format("Involutions, %d-boards", 2 * n - 2));
+    }
+
+    /**
+     * Checks that D_1 --> D_2 (means: the closest) iff K(D_1) --> K(D_2) as
+     *
+     * @param toKerovMap    cached D |--> K(D) function
+     * @param toKerovMapInv cached K(D) |--> D function, inverse of `toKerovMap`
+     * @param sortedBoards  sorted R-boards
+     * @param sortedKerov   sorted K(R)-boards
+     * @return
+     */
+    private static boolean check(HashMap<Board, Board> toKerovMap, HashMap<Board, Board> toKerovMapInv,
+                                 SortedBoardCollection sortedBoards, SortedBoardCollection sortedInvols) {
+        Board board0 = sortedBoards.theLeast();
+        return dfsCheck(board0,
+                toKerovMap, toKerovMapInv,
+                sortedBoards, sortedInvols,
+                new HashMap<>());
+    }
+
+    /**
+     * @param currentBoard
+     * @param toKerovMap
+     * @param toKerovMapInv
+     * @param sortedBoards
+     * @param sortedKerov
+     * @param hypCache
+     * @return
+     */
+    private static boolean dfsCheck(Board currentBoard,
+                                    HashMap<Board, Board> toKerovMap, HashMap<Board, Board> toKerovMapInv,
+                                    SortedBoardCollection sortedBoards, SortedBoardCollection sortedInvols,
+                                    Map<Board, Boolean> hypCache) {
+        if (hypCache.containsKey(currentBoard))
+            return hypCache.get(currentBoard);
+
+        Board currentKerov = toKerovMap.get(currentBoard);
+        BoardCollection boardsAbove = sortedBoards.closestAbove(currentBoard);
+        BoardCollection inolsAbove = sortedInvols.closestAbove(currentKerov);
+        for (Board board : boardsAbove) {
+            Board kerov = toKerovMap.get(board);
+            boolean contains = sortedInvols.contains(kerov);
+//            log.info("contains.");
+            if (!contains) {
+                log.info("here :( it begins");
+
+                log.info("currentBoard = ");
+                log.info(currentBoard);
+
+                log.info("currentAbove = ");
+                log.info(board);
+
+                log.info("currentKerov = ");
+                log.info(currentKerov);
+
+                log.info("kerovAbove = ");
+                log.info(kerov);
+
+                log.info("it ends");
+                return false;
+            }
+            if (!dfsCheck(board, toKerovMap, toKerovMapInv, sortedBoards, sortedInvols, hypCache)) {
+                hypCache.put(currentBoard, false);
+                return false;
+            }
+        }
+
+        hypCache.put(currentBoard, true);
+        return true;
+    }
+
+    /**
+     * Execution point.
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        new Main();
+    }
+
+    private void drawGraph(SortedBoardCollection sortedBoards, String frameTitle) {
         Graph<String, String> graph = new UndirectedSparseGraph<>();
         StaticLayout<String, String> layout = new StaticLayout<>(graph);
         VisualizationViewer<String, String> viewer = new VisualizationViewer<>(layout);
@@ -68,12 +180,11 @@ public class Main {
         viewer.setGraphMouse(new DefaultModalGraphMouse<>());
         viewer.getRenderContext().setVertexLabelTransformer(x -> x);
 
-        JFrame jf = new JFrame();
-        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JFrame jf = new JFrame(frameTitle);
+        jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jf.add(zoomPane);
         jf.pack();
         jf.setVisible(true);
-        log.info("Finished initializing UI.");
 
         ArrayDeque<Board> queue = new ArrayDeque<>();
         queue.add(sortedBoards.theLeast());
@@ -110,66 +221,5 @@ public class Main {
             }
         }
         log.info("Finished drawing graph.");
-
-        //NEW here
-        ArrayList<Board> kerovBoards = new ArrayList<>(boards.size());
-        HashMap<Board, Board> toKerovMap = new HashMap<>();
-        HashMap<Board, Board> toKerovMapInv = new HashMap<>();
-        for (Board board : boards) {
-            Board kerovC = board.kerov();
-            kerovBoards.add(kerovC);
-
-            toKerovMap.put(board, kerovC);
-            toKerovMapInv.put(kerovC, board);
-        }
-        BoardCollection kerovCollection = BoardCollection.valueOf(kerovBoards);
-        SortedBoardCollection sortedKerov = kerovCollection.sort();
-
-        boolean ch = check(
-                toKerovMap, toKerovMapInv,
-                sortedBoards, sortedKerov
-        );
-        log.info(String.format("hypothesis is %b", ch));
-    }
-
-    private static boolean check(HashMap<Board, Board> toKerovMap, HashMap<Board, Board> toKerovMapInv,
-                                 SortedBoardCollection sortedBoards, SortedBoardCollection sortedKerov) {
-        Board board0 = sortedBoards.theLeast();
-        return dfsCheck(board0,
-                toKerovMap, toKerovMapInv,
-                sortedBoards, sortedKerov,
-                new HashMap<>());
-    }
-
-    private static boolean dfsCheck(Board currentBoard,
-                                    HashMap<Board, Board> toKerovMap, HashMap<Board, Board> toKerovMapInv,
-                                    SortedBoardCollection sortedBoards, SortedBoardCollection sortedKerov,
-                                    Map<Board, Boolean> hypCache) {
-        if (hypCache.containsKey(currentBoard))
-            return hypCache.get(currentBoard);
-
-        Board currentKerov = toKerovMap.get(currentBoard);
-        BoardCollection boardsAbove = sortedBoards.closestAbove(currentBoard);
-        BoardCollection kerovsAbove = sortedKerov.closestAbove(currentKerov);
-        for (Board board : boardsAbove) {
-            Board kerov = toKerovMap.get(board);
-            boolean contains = kerovsAbove.contains(kerov);
-            log.info("contains.");
-            if (!contains) {
-                log.info("here :(");
-                return false;
-            }
-            if (!dfsCheck(board, toKerovMap, toKerovMapInv, sortedBoards, sortedKerov, hypCache)) {
-                hypCache.put(currentBoard, false);
-                return false;
-            }
-        }
-
-        hypCache.put(currentBoard, true);
-        return true;
-    }
-
-    public static void main(String[] args) {
-        new Main();
     }
 }
