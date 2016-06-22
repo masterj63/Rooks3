@@ -12,6 +12,12 @@ public class BoardCollection extends AbstractCollection<Board> {
         COLLECTION = collection;
     }
 
+    /**
+     * A static factory.
+     *
+     * @param boards to create a `BoardCollection` from.
+     * @return new `BoardCollection`
+     */
     public static BoardCollection valueOf(Collection<Board> boards) {
         Collection<Board> unmodifiableBoards = Collections.unmodifiableCollection(boards);
         BoardCollection boardCollection = new BoardCollection(unmodifiableBoards);
@@ -33,6 +39,9 @@ public class BoardCollection extends AbstractCollection<Board> {
         return COLLECTION.size();
     }
 
+    /**
+     * @return the `BoardCollection`, sorted though.
+     */
     public SortedBoardCollection sort() {
         return SortedBoardCollection.valueOf(COLLECTION);
     }

@@ -4,6 +4,7 @@ import ru.samsu.mj.board.Board;
 import ru.samsu.mj.board.PartialComparison;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SortedBoardCollection extends AbstractCollection<Board> {
     private final static BoardCollection EMPTY_BOARD_COLLECTION = BoardCollection.valueOf(Collections.EMPTY_LIST);
@@ -18,6 +19,12 @@ public class SortedBoardCollection extends AbstractCollection<Board> {
         ORIGINAL_SET_COLLECTION = originalCollection;
     }
 
+    /**
+     * A static factory.
+     *
+     * @param boardCollection Boards to sort.
+     * @return new `SortedBoardCollection`.
+     */
     static SortedBoardCollection valueOf(Collection<Board> boardCollection) {
         Map<Board, BoardCollection> map = new HashMap<>();
         Board theLeastBoard = null;
@@ -42,19 +49,26 @@ public class SortedBoardCollection extends AbstractCollection<Board> {
         return new SortedBoardCollection(map, theLeastBoard, new HashSet<>(boardCollection));
     }
 
+    /**
+     * Injects into `map` a mapping from every Board of `lastLayer` to a set of its closest above.
+     *
+     * @param map       to inject in.
+     * @param lastLayer boards to choose mappings' keys from.
+     * @param nextLayer boards to choose mappings' values from.
+     */
     private static void injectMapping(Map<Board, BoardCollection> map, Set<Board> lastLayer, Set<Board> nextLayer) {
         for (Board oneBoard : lastLayer) {
-            Set<Board> imageSet = new HashSet<>();// and `oneBoard` is its key
-            for (Board anotherBoard : nextLayer)
-                if (oneBoard.partiallyCompare(anotherBoard) == PartialComparison.LESS)
-                    imageSet.add(anotherBoard);
+            Set<Board> imageSet = nextLayer.stream().
+                    filter(anotherBoard ->
+                            oneBoard.partiallyCompare(anotherBoard) == PartialComparison.LESS)
+                    .collect(Collectors.toSet());// and `oneBoard` is its key
             map.put(oneBoard, BoardCollection.valueOf(imageSet));
         }
     }
 
     /**
      * @param buffer --- the set of `Board`s to choose from.
-     * @return the subset of `Board`s that are no greater than any other one in `buffer`.
+     * @return the subset of `Board`s that are no greater than any other one in `buffer`. The subset of minimals in other words.
      */
     private static Set<Board> nextLayer(Set<Board> buffer) {
         Set<Board> result = new HashSet<>();
@@ -73,10 +87,17 @@ public class SortedBoardCollection extends AbstractCollection<Board> {
         return result;
     }
 
+    /**
+     * @return the least board in the collection.
+     */
     public Board theLeast() {
         return THE_LEAST_BOARD;
     }
 
+    /**
+     * @param board is any Board in the collection.
+     * @return set of the closest boards above from the collection.
+     */
     public BoardCollection closestAbove(Board board) {
         return MAP.getOrDefault(board, EMPTY_BOARD_COLLECTION);
     }

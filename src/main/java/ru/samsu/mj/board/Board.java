@@ -3,7 +3,7 @@ package ru.samsu.mj.board;
 import java.util.Arrays;
 
 /**
- * Represents a bottom-left-cornered board in C_{n} (n is even).
+ * Represents a bottom-left-cornered board in both A_(n-1) and C_(n) (n is even).
  */
 public class Board implements PartiallyComparable<Board> {
     private static final char rookUnicode = '\u2656';
