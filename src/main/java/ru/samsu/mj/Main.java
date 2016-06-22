@@ -9,7 +9,6 @@ import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.message.FormattedMessageFactory;
 import ru.samsu.mj.board.Board;
 import ru.samsu.mj.board.BoardGenerator;
 import ru.samsu.mj.collection.BoardCollection;
@@ -24,7 +23,7 @@ import java.util.Map;
 import static java.lang.String.format;
 
 public class Main {
-    private static final Logger log = LogManager.getLogger(Main.class, new FormattedMessageFactory());
+    private static final Logger log = LogManager.getLogger(Main.class);
     private static final int DEFAULT_DIMENSION = 4;
 
     private Main() {
@@ -62,19 +61,11 @@ public class Main {
         drawGraph(sortedBoards, String.format("Boards, %d-boards", n));
         log.info("Finished initializing UI.");
 
-        //NEW here
-//        ArrayList<Board> kerovBoards = new ArrayList<>(boards.size());
         HashMap<Board, Board> toKerovMap = new HashMap<>();
-        HashMap<Board, Board> toKerovMapInv = new HashMap<>();
         for (Board board : boards) {
             Board kerovC = board.kerov();
-//            kerovBoards.add(kerovC);
-
             toKerovMap.put(board, kerovC);
-            toKerovMapInv.put(kerovC, board);
         }
-//        BoardCollection kerovCollection = BoardCollection.valueOf(kerovBoards);
-//        SortedBoardCollection sortedKerov = kerovCollection.sort();
 
         log.info("Started generating invols.");
         BoardCollection invols = BoardGenerator.generateByDimensionInvols(2 * n - 2);
@@ -84,8 +75,9 @@ public class Main {
         log.info("Sorted invols.", "");
         log.info("Checking invols...");
         boolean ch = check(
-                toKerovMap, toKerovMapInv,
-                sortedBoards, sortedInvols
+                toKerovMap,
+                sortedBoards,
+                sortedInvols
         );
         log.info(String.format("hypothesis is %b", ch));
 
@@ -93,35 +85,37 @@ public class Main {
     }
 
     /**
-     * Checks that D_1 --> D_2 (means: the closest) iff K(D_1) --> K(D_2) as
+     * Checks that D_1 --> D_2 as a rook placement iff K(D_1) --> K(D_2) as an involution.
      *
-     * @param toKerovMap    cached D |--> K(D) function
-     * @param toKerovMapInv cached K(D) |--> D function, inverse of `toKerovMap`
-     * @param sortedBoards  sorted R-boards
-     * @param sortedKerov   sorted K(R)-boards
-     * @return
+     * @param toKerovMap   D \in R_(n x n) --> K(D) \in I_(2n-2 x 2n-2)
+     * @param sortedBoards sorted R_(n x n)
+     * @param sortedInvols sorted I_(2n-2 x 2n-2)
+     * @return whether or not the hypothesis is true.
      */
-    private static boolean check(HashMap<Board, Board> toKerovMap, HashMap<Board, Board> toKerovMapInv,
-                                 SortedBoardCollection sortedBoards, SortedBoardCollection sortedInvols) {
+    private static boolean check(HashMap<Board, Board> toKerovMap,
+                                 SortedBoardCollection sortedBoards,
+                                 SortedBoardCollection sortedInvols) {
         Board board0 = sortedBoards.theLeast();
         return dfsCheck(board0,
-                toKerovMap, toKerovMapInv,
+                toKerovMap,
                 sortedBoards, sortedInvols,
                 new HashMap<>());
     }
 
     /**
-     * @param currentBoard
-     * @param toKerovMap
-     * @param toKerovMapInv
-     * @param sortedBoards
-     * @param sortedKerov
-     * @param hypCache
-     * @return
+     * Recursively searches for the hypothesis failure. Just a DFS, see `check`.
+     *
+     * @param currentBoard current board requiring the check. This function the recurs from every successive.
+     * @param toKerovMap   D \in R_(n x n) --> K(D) \in I_(2n-2 x 2n-2)
+     * @param sortedBoards sorted R_(n x n)
+     * @param sortedInvols sorted I_(2n-2 x 2n-2)
+     * @param hypCache     TODO
+     * @return whether or not the hypothesis is true.
      */
     private static boolean dfsCheck(Board currentBoard,
-                                    HashMap<Board, Board> toKerovMap, HashMap<Board, Board> toKerovMapInv,
-                                    SortedBoardCollection sortedBoards, SortedBoardCollection sortedInvols,
+                                    HashMap<Board, Board> toKerovMap,
+                                    SortedBoardCollection sortedBoards,
+                                    SortedBoardCollection sortedInvols,
                                     Map<Board, Boolean> hypCache) {
         if (hypCache.containsKey(currentBoard))
             return hypCache.get(currentBoard);
@@ -131,7 +125,7 @@ public class Main {
         BoardCollection inolsAbove = sortedInvols.closestAbove(currentKerov);
         for (Board board : boardsAbove) {
             Board kerov = toKerovMap.get(board);
-            boolean contains = sortedInvols.contains(kerov);
+            boolean contains = inolsAbove.contains(kerov);
 //            log.info("contains.");
             if (!contains) {
                 log.info("here :( it begins");
@@ -151,7 +145,7 @@ public class Main {
                 log.info("it ends");
                 return false;
             }
-            if (!dfsCheck(board, toKerovMap, toKerovMapInv, sortedBoards, sortedInvols, hypCache)) {
+            if (!dfsCheck(board, toKerovMap, sortedBoards, sortedInvols, hypCache)) {
                 hypCache.put(currentBoard, false);
                 return false;
             }
@@ -161,15 +155,16 @@ public class Main {
         return true;
     }
 
-    /**
-     * Execution point.
-     *
-     * @param args
-     */
     public static void main(String[] args) {
         new Main();
     }
 
+    /**
+     * Plots the Hasse diagram for `sortedBoards`.
+     *
+     * @param sortedBoards the set to plot.
+     * @param frameTitle   a string to be printed on a JFrame bar.
+     */
     private void drawGraph(SortedBoardCollection sortedBoards, String frameTitle) {
         Graph<String, String> graph = new UndirectedSparseGraph<>();
         StaticLayout<String, String> layout = new StaticLayout<>(graph);
