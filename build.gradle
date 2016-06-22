@@ -14,8 +14,10 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'application'
 
+mainClassName = 'ru.samsu.mj.Main'
 sourceCompatibility = 1.8
 
 repositories {
@@ -39,6 +41,6 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'ru.samsu.mj.Main'
+        attributes 'Main-Class': mainClassName
     }
 }
