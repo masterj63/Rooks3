@@ -10,7 +10,7 @@ import edu.uci.ics.jung.visualization.renderers.Renderer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.samsu.mj.board.Board;
-import ru.samsu.mj.board.BoardGenerator;
+import ru.samsu.mj.board.c_n.BoardGeneratorC;
 import ru.samsu.mj.collection.BoardCollection;
 import ru.samsu.mj.collection.SortedBoardCollection;
 
@@ -50,7 +50,7 @@ public class Main {
         }
 
         log.info("Started generating boards.");
-        BoardCollection boards = BoardGenerator.generateByDimension(n);
+        BoardCollection boards = BoardGeneratorC.generateByDimension(n);
         log.info(format("Finished generating (%d) boards.", boards.size()));
 
         log.info("Started sorting boards.");
@@ -68,7 +68,7 @@ public class Main {
         }
 
         log.info("Started generating invols.");
-        BoardCollection invols = BoardGenerator.generateByDimensionInvols(2 * n - 2);
+        BoardCollection invols = BoardGeneratorC.generateByDimensionInvols(2 * n - 2);
         log.info("Generated ({}) invols.", invols.size());
         log.info("Started sorting invols.", "");
         SortedBoardCollection sortedInvols = invols.sort();

@@ -1,12 +1,13 @@
-package ru.samsu.mj.board;
+package ru.samsu.mj.board.c_n;
 
+import ru.samsu.mj.board.Board;
 import ru.samsu.mj.collection.BoardCollection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BoardGenerator {
+public class BoardGeneratorC {
     public static BoardCollection generateByDimensionInvols(int n) {
         List<Board> list = new ArrayList<>();
         int[] board = new int[n];
