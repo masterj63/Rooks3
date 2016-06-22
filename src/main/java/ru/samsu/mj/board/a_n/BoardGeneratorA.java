@@ -18,7 +18,32 @@ public class BoardGeneratorA {
     }
 
     private static void generateByDimensionInvols(List<Board> list, int[] current, boolean[] occCols, int n, int i) {
-        throw new UnsupportedOperationException();
+        if (i == n) {
+            Board board = Board.valueOf(current);
+            list.add(board);
+            return;
+        }
+
+        generateByDimensionInvols(list, current, occCols, n, 1 + i);
+
+        int max = i;
+        for (int j = 0; j < max; j++) {
+            //TODO check these conditions
+            if (occCols[i])
+                continue;
+            if (occCols[j])
+                continue;
+            if (current[i] != -1)
+                continue;
+            if (current[j] != -1)
+                continue;
+
+            occCols[j] = true;
+            current[i] = j;
+            generateByDimensionInvols(list, current, occCols, n, 1 + i);
+            occCols[j] = false;
+            current[i] = -1;
+        }
     }
 
     public static BoardCollection generateByDimension(int n) {
@@ -31,9 +56,6 @@ public class BoardGeneratorA {
     }
 
     private static void generateByDimension(List<Board> list, int[] current, boolean[] occCols, int n, int i) {
-        if (1 == 1)
-            throw new UnsupportedOperationException();
-
         if (i == n) {
             Board board = Board.valueOf(current);
             list.add(board);
@@ -42,8 +64,19 @@ public class BoardGeneratorA {
 
         generateByDimension(list, current, occCols, n, 1 + i);
 
-        for (int j = 0; j < n; j++) {
-            throw new UnsupportedOperationException();
+        int max = i;
+        for (int j = 0; j < max; j++) {
+            //TODO check these conditions
+            if (occCols[j])
+                continue;
+            if (current[i] != -1)
+                continue;
+
+            occCols[j] = true;
+            current[i] = j;
+            generateByDimension(list, current, occCols, n, 1 + i);
+            occCols[j] = false;
+            current[i] = -1;
         }
     }
 }

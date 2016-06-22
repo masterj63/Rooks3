@@ -32,9 +32,14 @@ public class BoardGeneratorC {
             int d = n - 1 - i - j;
             int i2 = i + d, j2 = j + d;
 
+            //TODO check these conditions
             if (occCols[j] || occCols[j2])
                 continue;
             if (occCols[i] || occCols[i2])
+                continue;
+            if (current[j] != -1 || current[j2] != -1)
+                continue;
+            if (current[i] != -1 || current[i2] != -1)
                 continue;
 
             occCols[j] = occCols[j2] = true;
@@ -70,7 +75,10 @@ public class BoardGeneratorC {
             int d = n - 1 - i - j;
             int i2 = i + d, j2 = j + d;
 
+            //TODO check these conditions
             if (occCols[j] || occCols[j2])
+                continue;
+            if (current[i] != -1 || current[i2] != -1)
                 continue;
 
             occCols[j] = occCols[j2] = true;
