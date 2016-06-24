@@ -3,7 +3,10 @@ package ru.samsu.mj.board;
 import java.util.Arrays;
 
 /**
- * Represents a bottom-left-cornered board in both A_(n-1) and C_(n) (n is even).
+ * Represents a bottom-left-cornered board in both <b>A<sub>n-1</sub></b> and <b>C<sub>n</sub></b> (where <b>n</b> is even).
+ * We number its columns from left to right and its rows from top to bottom starting from <b>0</b> and up to <b>n-1</b> (both inclusively).
+ * We define a <i>deflated board</i> as an integer array of one dimension reflecting board's rows.
+ * Its <b>i</b><sup>th</sup> element is either <b>-1</b> (if there is no rook in <b>i</b><sup>th</sup> row) or <b>j</b> (positive or zero, if there is a rook in <b>i</b><sup>th</sup> row and <b>j</b><sup>th</sup> column).
  */
 public class Board implements PartiallyComparable<Board> {
     private static final char rookUnicode = '\u2656';
@@ -14,16 +17,30 @@ public class Board implements PartiallyComparable<Board> {
     private final RankMatrix RANK_MATRIX;
     private String html;
 
+    /**
+     * Constructs a new Board from a deflated board.
+     *
+     * @param deflatedBoard a ``deflated'' representation for a new {@link Board} to be constructed from.
+     */
     private Board(int[] deflatedBoard) {
         this.DEFLATED_BOARD = deflatedBoard;
         this.BOARD_MATRIX = BoardMatrix.valueOfDeflatedBoard(deflatedBoard);
         this.RANK_MATRIX = RankMatrix.valueOfBoardMatrix(BOARD_MATRIX);
     }
 
+    /**
+     * A static factory.
+     *
+     * @param deflatedBoard a ``deflated'' representation for a new {@link Board} to be constructed from.
+     * @return
+     */
     public static Board valueOf(int[] deflatedBoard) {
         return new Board(deflatedBoard.clone());
     }
 
+    /**
+     * @return whether this board contains no rooks.
+     */
     public boolean isEmpty() {
         for (int i : DEFLATED_BOARD)
             if (i != -1)
@@ -53,6 +70,9 @@ public class Board implements PartiallyComparable<Board> {
         return this.RANK_MATRIX.partiallyCompare(board.RANK_MATRIX);
     }
 
+    /**
+     * @return Kerov image of this board.
+     */
     public Board kerov() {
         int[] kerovDeflatedBoard = new int[-2 + 2 * DEFLATED_BOARD.length];
         Arrays.fill(kerovDeflatedBoard, -1);
@@ -64,6 +84,11 @@ public class Board implements PartiallyComparable<Board> {
         return new Board(kerovDeflatedBoard);
     }
 
+    /**
+     * Implementation note: the return value is cached.
+     *
+     * @return an HTML code to be used to display this board.
+     */
     public String html() {
         if (html == null) {
             StringBuilder stringBuilder = new StringBuilder();
