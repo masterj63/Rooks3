@@ -5,9 +5,15 @@ import ru.samsu.mj.board.Board;
 
 import java.util.*;
 
+/**
+ * Encapsulates a {@link Collection} of {@link Board}s.
+ */
 public class BoardCollection extends AbstractCollection<Board> {
     private final Collection<Board> COLLECTION;
 
+    /**
+     * @param collection a {@link Collection} to encapsulate.
+     */
     private BoardCollection(Collection<Board> collection) {
         COLLECTION = collection;
     }
@@ -22,11 +28,6 @@ public class BoardCollection extends AbstractCollection<Board> {
         Collection<Board> unmodifiableBoards = Collections.unmodifiableCollection(boards);
         BoardCollection boardCollection = new BoardCollection(unmodifiableBoards);
         return boardCollection;
-    }
-
-    public BoardCollection valueOfCollection(Collection<Board> collection) {
-        ArrayList<Board> boards = new ArrayList<>(collection.size());
-        return new BoardCollection(boards);
     }
 
     @Override

@@ -22,6 +22,9 @@ import java.util.Map;
 
 import static java.lang.String.format;
 
+/**
+ * The main class where the project begins.
+ */
 public class Main {
     private static final Logger log = LogManager.getLogger(Main.class);
     private static final int DEFAULT_DIMENSION = 4;
@@ -85,11 +88,11 @@ public class Main {
     }
 
     /**
-     * Checks that D_1 --> D_2 as a rook placement iff K(D_1) --> K(D_2) as an involution.
+     * Checks that <b>D_1 &rarr;<sub>R</sub> D_2</b> (as a rook placement) iff <b>K(D_1) &rarr;<sub>I</sub> K(D_2)</b> (as an involution).
      *
-     * @param toKerovMap   D \in R_(n x n) --> K(D) \in I_(2n-2 x 2n-2)
-     * @param sortedBoards sorted R_(n x n)
-     * @param sortedInvols sorted I_(2n-2 x 2n-2)
+     * @param toKerovMap   <b>D &isin; R<sub>n x n</sub> &rarr; K(D) &isin; I<sub>2n-2 x 2n-2</sub></b>.
+     * @param sortedBoards sorted <b>R<sub>n x n</sub></b>.
+     * @param sortedInvols sorted <b>I<sub>2n-2 x 2n-2</sub></b>.
      * @return whether or not the hypothesis is true.
      */
     private static boolean check(HashMap<Board, Board> toKerovMap,
@@ -106,10 +109,10 @@ public class Main {
      * Recursively searches for the hypothesis failure. Just a DFS, see `check`.
      *
      * @param currentBoard current board requiring the check. This function the recurs from every successive.
-     * @param toKerovMap   D \in R_(n x n) --> K(D) \in I_(2n-2 x 2n-2)
-     * @param sortedBoards sorted R_(n x n)
-     * @param sortedInvols sorted I_(2n-2 x 2n-2)
-     * @param hypCache     TODO
+     * @param toKerovMap   <b>D &isin; R<sub>n x n</sub> &rarr; K(D) &isin; I<sub>2n-2 x 2n-2</sub></b>.
+     * @param sortedBoards sorted <b>R<sub>n x n</sub></b>.
+     * @param sortedInvols sorted <b>I<sub>2n-2 x 2n-2</sub></b>.
+     * @param hypCache
      * @return whether or not the hypothesis is true.
      */
     private static boolean dfsCheck(Board currentBoard,

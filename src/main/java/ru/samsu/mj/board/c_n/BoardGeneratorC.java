@@ -7,7 +7,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Provides two public methods for generating set of boards and for generating set of boards-involutions in root system of type <b>C</b><sub>n</sub>.
+ * The dimension is <b>2n x 2n</b>.
+ */
 public class BoardGeneratorC {
+    /**
+     * @param n the dimension of the boards.
+     * @return involutions of type <b>C</b> of the dimension given.
+     */
     public static BoardCollection generateByDimensionInvols(int n) {
         List<Board> list = new ArrayList<>();
         int[] board = new int[n];
@@ -52,6 +60,10 @@ public class BoardGeneratorC {
         }
     }
 
+    /**
+     * @param n the dimension of the boards.
+     * @return involutions of type <b>C</b> of the dimension given.
+     */
     public static BoardCollection generateByDimension(int n) {
         List<Board> list = new ArrayList<>();
         int[] board = new int[n];

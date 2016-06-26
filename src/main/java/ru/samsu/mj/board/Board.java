@@ -18,7 +18,7 @@ public class Board implements PartiallyComparable<Board> {
     private String html;
 
     /**
-     * Constructs a new Board from a deflated board.
+     * Constructs a new {@link Board} from a deflated board.
      *
      * @param deflatedBoard a ``deflated'' representation for a new {@link Board} to be constructed from.
      */
@@ -32,7 +32,7 @@ public class Board implements PartiallyComparable<Board> {
      * A static factory.
      *
      * @param deflatedBoard a ``deflated'' representation for a new {@link Board} to be constructed from.
-     * @return
+     * @return a new {@link Board}.
      */
     public static Board valueOf(int[] deflatedBoard) {
         return new Board(deflatedBoard.clone());

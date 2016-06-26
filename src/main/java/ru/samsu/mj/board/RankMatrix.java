@@ -1,5 +1,8 @@
 package ru.samsu.mj.board;
 
+/**
+ * Encapsulates a two-dimensional matrix such that its <b>[i][j]</b><sup>th</sup> element is the number of rooks that are no higher than in <b>i</b><sup>th</sup> row and no righter than in <b>j</b><sup>th</sup> column in a {@link BoardMatrix}.
+ */
 class RankMatrix implements PartiallyComparable<RankMatrix> {
     private final int[][] RANK_MATRIX;
 
@@ -7,6 +10,12 @@ class RankMatrix implements PartiallyComparable<RankMatrix> {
         this.RANK_MATRIX = rankMatrix;
     }
 
+    /**
+     * A static factory.
+     *
+     * @param boardMatrix see the class' commentary.
+     * @return a new value.
+     */
     static RankMatrix valueOfBoardMatrix(BoardMatrix boardMatrix) {
         int[][] rankMatrix = new int[boardMatrix.length()][];
 
