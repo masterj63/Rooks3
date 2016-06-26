@@ -5,6 +5,10 @@ import ru.samsu.mj.collection.BoardCollection;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * See https://oeis.org/A000110 for rooks.
+ * See https://oeis.org/A066223 for involutions.
+ */
 public class BoardGeneratorATest {
     @Test
     public void generateByDimension2() throws Exception {
@@ -67,5 +71,47 @@ public class BoardGeneratorATest {
         BoardCollection boards = BoardGeneratorA.generateByDimension(10);
         int size = boards.size();
         assertEquals(115975, size);
+    }
+
+    @Test
+    public void generateByDimensionInvols2() throws Exception {
+        BoardCollection boards = BoardGeneratorA.generateByDimensionInvols(2);
+        int size = boards.size();
+        assertEquals(2, size);
+    }
+
+    @Test
+    public void generateByDimensionInvols4() throws Exception {
+        BoardCollection boards = BoardGeneratorA.generateByDimensionInvols(4);
+        int size = boards.size();
+        assertEquals(10, size);
+    }
+
+    @Test
+    public void generateByDimensionInvols6() throws Exception {
+        BoardCollection boards = BoardGeneratorA.generateByDimensionInvols(6);
+        int size = boards.size();
+        assertEquals(76, size);
+    }
+
+    @Test
+    public void generateByDimensionInvols8() throws Exception {
+        BoardCollection boards = BoardGeneratorA.generateByDimensionInvols(8);
+        int size = boards.size();
+        assertEquals(764, size);
+    }
+
+    @Test
+    public void generateByDimensionInvols10() throws Exception {
+        BoardCollection boards = BoardGeneratorA.generateByDimensionInvols(10);
+        int size = boards.size();
+        assertEquals(9496, size);
+    }
+
+    @Test
+    public void generateByDimensionInvols12() throws Exception {
+        BoardCollection boards = BoardGeneratorA.generateByDimensionInvols(12);
+        int size = boards.size();
+        assertEquals(140152, size);
     }
 }
