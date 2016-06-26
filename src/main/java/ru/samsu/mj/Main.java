@@ -25,7 +25,7 @@ import static java.lang.String.format;
 /**
  * The main class where the project begins.
  */
-public class Main {
+class Main {
     private static final Logger log = LogManager.getLogger(Main.class);
     private static final int DEFAULT_DIMENSION = 4;
 

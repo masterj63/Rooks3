@@ -26,8 +26,7 @@ public class BoardCollection extends AbstractCollection<Board> {
      */
     public static BoardCollection valueOf(Collection<Board> boards) {
         Collection<Board> unmodifiableBoards = Collections.unmodifiableCollection(boards);
-        BoardCollection boardCollection = new BoardCollection(unmodifiableBoards);
-        return boardCollection;
+        return new BoardCollection(unmodifiableBoards);
     }
 
     @Override

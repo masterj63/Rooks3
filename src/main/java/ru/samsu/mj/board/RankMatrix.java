@@ -62,6 +62,7 @@ class RankMatrix implements PartiallyComparable<RankMatrix> {
         return new RankMatrix(rankMatrix);
     }
 
+    @Override
     public PartialComparison partiallyCompare(RankMatrix that) {
         boolean isLessOrEq = true;
         boolean isEqual = true;

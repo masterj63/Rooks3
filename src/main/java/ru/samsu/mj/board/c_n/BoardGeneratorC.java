@@ -21,8 +21,7 @@ public class BoardGeneratorC {
         int[] board = new int[n];
         Arrays.fill(board, -1);
         generateByDimensionInvols(list, board, new boolean[n], n, 0);
-        BoardCollection boardCollection = BoardCollection.valueOf(list);
-        return boardCollection;
+        return BoardCollection.valueOf(list);
     }
 
     private static void generateByDimensionInvols(List<Board> list, int[] current, boolean[] occCols, int n, int i) {
@@ -69,8 +68,7 @@ public class BoardGeneratorC {
         int[] board = new int[n];
         Arrays.fill(board, -1);
         generateByDimension(list, board, new boolean[n], n, 0);
-        BoardCollection boardCollection = BoardCollection.valueOf(list);
-        return boardCollection;
+        return BoardCollection.valueOf(list);
     }
 
     private static void generateByDimension(List<Board> list, int[] current, boolean[] occCols, int n, int i) {
