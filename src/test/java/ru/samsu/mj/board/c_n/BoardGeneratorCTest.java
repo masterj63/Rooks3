@@ -60,7 +60,7 @@ public class BoardGeneratorCTest {
     }
 
     @Test
-    public void generateByDimensionInvols() throws Exception {
+    public void generateByDimensionInvols2() throws Exception {
         BoardCollection boards = BoardGeneratorC.generateByDimensionInvols(2);
         int size = boards.size();
         assertEquals(2, size);
